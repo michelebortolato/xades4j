@@ -6,7 +6,7 @@ _XAdES4j_ is an high-level, configurable and extensible Java implementation of X
 
 The API provides an high level of abstraction, handling all the structural details of XAdES. The library relies on Apache XML Security for the core XML-DSIG processing and uses Guice to assemble the different configurable components.
 
-There are multiple implementations of XML-DSIG, namely the one bundled with the Java platform and the one in Apache XML Security. However, Java doesn't have support for XAdES and solid/complete/public implementations are hard to find. The motivation for this project emerges directly from those facts.
+There are multiple implementations of XML-DSIG, namely the one bundled with the Java platform and the one in Apache XML Security. However, Java doesn't have support for XAdES and solid/complete/public implementations are hard to find. The motivation for this project emerges directly  from those facts.
 
 # Package
 
