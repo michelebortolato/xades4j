@@ -30,9 +30,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/luisgoncalves/xades4j</url>
-        <connection>scm:git:https://github.com/luisgoncalves/xades4j</connection>
-        <developerConnection>scm:git:https://github.com/luisgoncalves/xades4j</developerConnection>
+        <url>https://github.com/michelebortolato/xades4j</url>
+        <connection>scm:git:https://github.com/michelebortolato/xades4j</connection>
+        <developerConnection>scm:git:https://github.com/michelebortolato/xades4j</developerConnection>
     </scm>
 
     <developers>
@@ -41,6 +41,13 @@
             <name>Luís Gonçalves</name>
             <email>luis.fgoncalv@gmail.com</email>
             <url>http://luisfsgoncalves.wordpress.com</url>
+        </developer>
+    </developers>
+    
+    <developers>
+        <developer>
+            <name>Michele Bortolato</name>
+            <email>michele.bortol@gmail.com</email>
         </developer>
     </developers>
 
