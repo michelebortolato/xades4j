@@ -51,6 +51,7 @@ class SignatureTimeStampVerifier extends TimeStampVerifierBase<SignatureTimeStam
         Element sigValueElem = DOMHelper.getFirstDescendant(
             ctx.getSignature().getElement(),
             Constants.SignatureSpecNS, Constants._TAG_SIGNATUREVALUE);
+       	
         digestInput.addNode(sigValueElem);
         return new SignatureTimeStampProperty();
     }

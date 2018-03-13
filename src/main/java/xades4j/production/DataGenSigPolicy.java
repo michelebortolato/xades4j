@@ -60,8 +60,7 @@ class DataGenSigPolicy implements PropertyDataObjectGenerator<SignaturePolicyIde
             return new SignaturePolicyData(
                     prop.getIdentifier(),
                     digestAlgUri,
-                    policyDigest,
-                    prop.getLocationUrl());
+                    policyDigest);
 
         } catch (IOException ex)
         {

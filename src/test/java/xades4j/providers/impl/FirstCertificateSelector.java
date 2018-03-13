@@ -21,14 +21,12 @@ import java.util.List;
 
 /**
  *
- * @author Luís
+ * @author Luí
  */
 public class FirstCertificateSelector implements KeyStoreKeyingDataProvider.SigningCertSelector
 {
-    @Override
-    public X509Certificate selectCertificate(
-            List<X509Certificate> availableCertificates)
-    {
-        return availableCertificates.get(0);
-    }
+
+	public X509Certificate selectCertificate(List<X509Certificate> availableCertificates) {
+		 return availableCertificates.get(0);
+	}
 }

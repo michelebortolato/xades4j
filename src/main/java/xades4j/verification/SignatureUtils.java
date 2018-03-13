@@ -80,66 +80,57 @@ class SignatureUtils
 
         List<X509Certificate> keyInfoCerts = new ArrayList<X509Certificate>(1);
         XMLX509IssuerSerial issuerSerial = null;
+
+        // Certificate selector to select the leaf certificate. If ds:IssuerSerial
+        // or ds:SubjectName are present, no order is needed in the certificates.
+        // Otherwise, the first ds:X509Certificate is assumed as the signing certificate.
         X509CertSelector certSelector = new X509CertSelector();
-
-        // XML-DSIG 4.4.4: "Any X509IssuerSerial, X509SKI, and X509SubjectName elements
-        // that appear MUST refer to the certificate or certificates containing the
-        // validation key."
-        // "All certificates appearing in an X509Data element MUST relate to the
-        // validation key by either containing it or being part of a certification
-        // chain that terminates in a certificate containing the validation key".
-
-        // Scan ds:X509Data to find ds:IssuerSerial or ds:SubjectName elements. The
-        // first to be found is used to select the leaf certificate. If none of those
-        // elements is present, the first ds:X509Certificate is assumed as the signing
-        // certificate.
-        boolean hasSelectionCriteria = false;
 
         try
         {
-            for (int i = 0; i < keyInfo.lengthX509Data(); ++i)
+            // The idea is to clearly identify the certificate that should be
+            // used to validate the signature. If multiple X509Data are present
+            // it gets ambiguous. I assumed that only ONE X509Data is present.
+            X509Data x509Data = keyInfo.itemX509Data(0);
+
+            // XML-DSIG 4.4.4: "elements that refer to a particular individual
+            // certificate MUST be grouped inside a single X509Data element and
+            // if the certificate to which they refer appears, it MUST also be in
+            // that X509Data element".
+            // "All certificates appearing in an X509Data element MUST relate to
+            // the validation key by either containing it or being part of a
+            // certification chain that terminates in a certificate containing
+            // the validation key".
+
+            if (x509Data.containsIssuerSerial())
             {
-                X509Data x509Data = keyInfo.itemX509Data(i);
-
-                if(!hasSelectionCriteria)
-                {
-                    if (x509Data.containsIssuerSerial())
-                    {
-                        issuerSerial = x509Data.itemIssuerSerial(0);
-                        certSelector.setIssuer(new X500Principal(issuerSerial.getIssuerName()));
-                        certSelector.setSerialNumber(issuerSerial.getSerialNumber());
-                        hasSelectionCriteria = true;
-                    }
-                    else if (x509Data.containsSubjectName())
-                    {
-                        certSelector.setSubject(new X500Principal(x509Data.itemSubjectName(0).getSubjectName()));
-                        hasSelectionCriteria = true;
-                    }
-                }
-
-                // Collect all certificates as they may be needed to build the cert path.
-                if (x509Data.containsCertificate())
-                {
-                    for (int j = 0; j < x509Data.lengthCertificate(); ++j)
-                    {
-                        keyInfoCerts.add(x509Data.itemCertificate(j).getX509Certificate());
-                    }
-                }
+                issuerSerial = x509Data.itemIssuerSerial(0);
+                certSelector.setIssuer(new X500Principal(issuerSerial.getIssuerName()));
+                certSelector.setSerialNumber(issuerSerial.getSerialNumber());
+            } else if (x509Data.containsSubjectName())
+            {
+                certSelector.setSubject(new X500Principal(x509Data.itemSubjectName(0).getSubjectName()));
+            } else if (x509Data.containsCertificate())
+            {
+                certSelector.setCertificate(x509Data.itemCertificate(0).getX509Certificate());
+            } else
+            // No criteria to select the leaf certificate.
+            // Improvement: search the SigningCertiticate property and try to
+            // find the "bottom" certificate.
+            {
+                throw new InvalidKeyInfoDataException("No criteria to select the leaf certificate");
             }
 
-            if(!hasSelectionCriteria)
+            // Even if certificates are not used as selection criteria, they have
+            // to be collected because they may be needed to build the cert path.
+            if (x509Data.containsCertificate())
             {
-                if(keyInfoCerts.isEmpty())
+                for (int j = 0; j < x509Data.lengthCertificate(); ++j)
                 {
-                    // No criteria to select the leaf certificate.
-                    // Improvement: search the SigningCertiticate property and try to
-                    // find the "bottom" certificate.
-                    throw new InvalidKeyInfoDataException("No criteria to select the leaf certificate");
+                    keyInfoCerts.add(x509Data.itemCertificate(j).getX509Certificate());
                 }
-                certSelector.setCertificate(keyInfoCerts.get(0));
             }
-        }
-        catch (XMLSecurityException ex)
+        } catch (XMLSecurityException ex)
         {
             throw new InvalidKeyInfoDataException("Cannot process X509Data", ex);
         }
@@ -225,7 +216,7 @@ class SignatureUtils
         if (null == signedPropsRef)
         // !!!
         // Still may be a XAdES signature, if the signing certificate is
-        // protected. For now, that scenario is not supported.
+        // protected. For now, that scenario is not suported.
         {
             throw new QualifyingPropertiesIncorporationException("SignedProperties reference not found");
         }

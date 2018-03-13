@@ -16,10 +16,6 @@
  */
 package xades4j.production;
 
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
-import org.apache.xml.security.transforms.TransformationException;
-import org.apache.xml.security.transforms.Transforms;
 import xades4j.properties.QualifyingProperties;
 import xades4j.properties.DataObjectDesc;
 import com.google.inject.Inject;
@@ -56,11 +52,8 @@ import xades4j.providers.DataObjectPropertiesProvider;
 import xades4j.providers.KeyingDataProvider;
 import xades4j.providers.SignaturePropertiesProvider;
 import xades4j.providers.SigningCertChainException;
-import xades4j.utils.CanonicalizerUtils;
 import xades4j.utils.DOMHelper;
 import xades4j.utils.ObjectUtils;
-import xades4j.utils.StringUtils;
-import xades4j.utils.TransformUtils;
 import xades4j.xml.marshalling.SignedPropertiesMarshaller;
 import xades4j.xml.marshalling.UnsignedPropertiesMarshaller;
 import xades4j.xml.marshalling.algorithms.AlgorithmsParametersMarshallingProvider;
@@ -79,7 +72,7 @@ class SignerBES implements XadesSigner
     /**/
     private final KeyingDataProvider keyingProvider;
     private final AlgorithmsProviderEx algorithmsProvider;
-    private final SignedDataObjectsProcessor dataObjectDescsProcessor;
+    private final DataObjectDescsProcessor dataObjectDescsProcessor;
     private final PropertiesDataObjectsGenerator propsDataObjectsGenerator;
     private final SignedPropertiesMarshaller signedPropsMarshaller;
     private final UnsignedPropertiesMarshaller unsignedPropsMarshaller;
@@ -93,7 +86,7 @@ class SignerBES implements XadesSigner
             KeyingDataProvider keyingProvider,
             AlgorithmsProviderEx algorithmsProvider,
             BasicSignatureOptionsProvider basicSignatureOptionsProvider,
-            SignedDataObjectsProcessor dataObjectDescsProcessor,
+            DataObjectDescsProcessor dataObjectDescsProcessor,
             SignaturePropertiesProvider signaturePropsProvider,
             DataObjectPropertiesProvider dataObjPropsProvider,
             PropertiesDataObjectsGenerator propsDataObjectsGenerator,
@@ -117,7 +110,7 @@ class SignerBES implements XadesSigner
         this.algorithmsParametersMarshaller = algorithmsParametersMarshaller;
 
         this.dataObjectDescsProcessor = dataObjectDescsProcessor;
-        this.keyInfoBuilder = new KeyInfoBuilder(basicSignatureOptionsProvider, algorithmsProvider, algorithmsParametersMarshaller);
+        this.keyInfoBuilder = new KeyInfoBuilder(basicSignatureOptionsProvider, algorithmsProvider);
         this.qualifPropsProcessor = new QualifyingPropertiesProcessor(signaturePropsProvider, dataObjPropsProvider);
     }
 
@@ -170,6 +163,9 @@ class SignerBES implements XadesSigner
 
         signature.setId(signatureId);
 
+        /* ds:KeyInfo */
+        this.keyInfoBuilder.buildKeyInfo(signingCertificate, signature);
+
         /* References */
         // Process the data object descriptions to get the References and mappings.
         // After this call all the signed data objects References and XMLObjects
@@ -177,9 +173,6 @@ class SignerBES implements XadesSigner
         Map<DataObjectDesc, Reference> referenceMappings = this.dataObjectDescsProcessor.process(
                 signedDataObjects,
                 signature);
-        
-        /* ds:KeyInfo */
-        this.keyInfoBuilder.buildKeyInfo(signingCertificate, signature);
 
         /* QualifyingProperties element */
         // Create the QualifyingProperties element
@@ -241,20 +234,14 @@ class SignerBES implements XadesSigner
             // with its value set to: http://uri.etsi.org/01903#SignedProperties."
 
             String digestAlgUri = algorithmsProvider.getDigestAlgorithmForDataObjsReferences();
-            if (StringUtils.isNullOrEmptyString(digestAlgUri))
+            if (null == digestAlgUri)
             {
                 throw new NullPointerException("Digest algorithm URI not provided");
             }
-            
-            // Use same canonicalization URI as specified in the ds:CanonicalizationMethod for Signature.
-            Algorithm canonAlg = this.algorithmsProvider.getCanonicalizationAlgorithmForSignature();
 
             try
             {
-                CanonicalizerUtils.checkC14NAlgorithm(canonAlg);
-                Transforms transforms = TransformUtils.createTransforms(canonAlg, this.algorithmsParametersMarshaller, signatureDocument);
-
-                signature.addDocument('#' + signedPropsId, transforms, digestAlgUri, null, QualifyingProperty.SIGNED_PROPS_TYPE_URI);
+                signature.addDocument('#' + signedPropsId, null, digestAlgUri, null, QualifyingProperty.SIGNED_PROPS_TYPE_URI);
             } catch (XMLSignatureException ex)
             {
                 // Seems to be thrown when the digest algorithm is not supported. In

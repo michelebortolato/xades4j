@@ -17,7 +17,6 @@
 package xades4j.xml.marshalling;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.bind.JAXBContext;
@@ -31,8 +30,6 @@ import xades4j.properties.data.GenericDOMData;
 import xades4j.properties.data.PropertyDataObject;
 import xades4j.properties.data.SigAndDataObjsPropertiesData;
 import xades4j.xml.bind.xades.ObjectFactory;
-import xades4j.xml.bind.xades.XmlSignedPropertiesType;
-import xades4j.xml.bind.xades.XmlUnsignedPropertiesType;
 import xades4j.utils.CollectionUtils;
 import xades4j.utils.DOMHelper;
 
@@ -42,21 +39,6 @@ import xades4j.utils.DOMHelper;
  */
 abstract class BaseJAXBMarshaller<TXml>
 {
-    private static final Map<Class, JAXBContext> jaxbContexts;
-    static
-    {
-        try
-        {
-            Map<Class, JAXBContext> contexts = new HashMap<Class, JAXBContext>();
-            contexts.put(XmlSignedPropertiesType.class, JAXBContext.newInstance(XmlSignedPropertiesType.class));
-            contexts.put(XmlUnsignedPropertiesType.class, JAXBContext.newInstance(XmlUnsignedPropertiesType.class));
-            jaxbContexts = Collections.unmodifiableMap(contexts);
-        }
-        catch (JAXBException e)
-        {
-            throw new UnsupportedOperationException(e);
-        }
-    }
     private final Map<Class, QualifyingPropertyDataToXmlConverter<TXml>> converters;
     private final String propsElemName;
 
@@ -79,9 +61,7 @@ abstract class BaseJAXBMarshaller<TXml>
             TXml xmlProps) throws MarshalException
     {
         if (properties.isEmpty())
-        {
             return;
-        }
 
         Document doc = qualifyingPropsNode.getOwnerDocument();
 
@@ -100,11 +80,10 @@ abstract class BaseJAXBMarshaller<TXml>
         }
 
         if (propsNotAlreadyPresent(qualifyingPropsNode))
-        // If the QualifyingProperties node doesn't already have an element
-        // for the current type of properties, do a JAXB marshalling into it.
-        {
+            // If the QualifyingProperties node doesn't already have an element
+            // for the current type of properties, do a JAXB marshalling into it.
             doJAXBMarshalling(qualifyingPropsNode, xmlProps);
-        } else
+        else
         {
             // If it has, marshall into a temp node and transfer the resulting
             // nodes into the appropriate QualifyingProperties children.
@@ -120,17 +99,13 @@ abstract class BaseJAXBMarshaller<TXml>
 
         // The top-most XML element for the current type of properties.
         Element topMostPropsElem = DOMHelper.getFirstDescendant(
-                (Element) qualifyingPropsNode,
+                (Element)qualifyingPropsNode,
                 QualifyingProperty.XADES_XMLNS, propsElemName);
 
         if (!CollectionUtils.nullOrEmpty(unknownSigProps))
-        {
             marshallUnknownProps(unknownSigProps, DOMHelper.getFirstChildElement(topMostPropsElem));
-        }
         if (!CollectionUtils.nullOrEmpty(unknownDataObjProps))
-        {
             marshallUnknownProps(unknownDataObjProps, DOMHelper.getLastChildElement(topMostPropsElem));
-        }
     }
 
     private Collection<PropertyDataObject> convert(
@@ -153,9 +128,7 @@ abstract class BaseJAXBMarshaller<TXml>
                 unknownProps = CollectionUtils.newIfNull(unknownProps, 1);
                 unknownProps.add(p);
             } else
-            {
                 conv.convertIntoObjectTree(p, xmlProps, doc);
-            }
         }
         return unknownProps;
     }
@@ -163,7 +136,7 @@ abstract class BaseJAXBMarshaller<TXml>
     private boolean propsNotAlreadyPresent(Node qualifyingPropsNode)
     {
         return null == DOMHelper.getFirstDescendant(
-                (Element) qualifyingPropsNode,
+                (Element)qualifyingPropsNode,
                 QualifyingProperty.XADES_XMLNS, propsElemName);
     }
 
@@ -172,14 +145,13 @@ abstract class BaseJAXBMarshaller<TXml>
         try
         {
             // Create the JAXB marshaller.
-            JAXBContext jaxbContext = jaxbContexts.get(xmlProps.getClass());
+            JAXBContext jaxbContext = JAXBContext.newInstance(xmlProps.getClass());
             Marshaller marshaller = jaxbContext.createMarshaller();
             // Create the root JAXBElement.
             Object propsElem = createPropsXmlElem(new ObjectFactory(), xmlProps);
             // Marshal the properties.
             marshaller.marshal(propsElem, qualifyingPropsNode);
-        }
-        catch (JAXBException ex)
+        } catch (JAXBException ex)
         {
             throw new MarshalException("Error on JAXB marshalling", ex);
         }
@@ -190,7 +162,7 @@ abstract class BaseJAXBMarshaller<TXml>
         // The QualifyingProperties node already has a child element for the current
         // type of properties.
         Element existingProps = DOMHelper.getFirstDescendant(
-                (Element) qualifPropsNode,
+                (Element)qualifPropsNode,
                 QualifyingProperty.XADES_XMLNS, propsElemName);
         // The new properties (Signed or Unsigned) were marshalled into the temp
         // node.
@@ -203,16 +175,13 @@ abstract class BaseJAXBMarshaller<TXml>
                     existingProps, newSpecificProps.getNamespaceURI(), newSpecificProps.getLocalName());
 
             if (null == existingSpecificProps)
-            // No element for these properties. Append the new element to the existing
-            // properties.
-            {
+                // No element for these properties. Append the new element to the existing
+                // properties.
                 existingProps.appendChild(newSpecificProps);
-            } else
-            // There are properties. Transfer all the new properties into the existing
-            // element.
-            {
+            else
+                // There are properties. Transfer all the new properties into the existing
+                // element.
                 transferChildren(newSpecificProps, existingSpecificProps);
-            }
 
             newSpecificProps = DOMHelper.getNextSiblingElement(newSpecificProps);
 
@@ -243,14 +212,10 @@ abstract class BaseJAXBMarshaller<TXml>
         for (PropertyDataObject pData : unknownProps)
         {
             if (!(pData instanceof GenericDOMData))
-            {
                 throw new UnsupportedDataObjectException(pData);
-            }
-            Node propElem = ((GenericDOMData) pData).getPropertyElement();
+            Node propElem = ((GenericDOMData)pData).getPropertyElement();
             if (propElem.getOwnerDocument() != parent.getOwnerDocument())
-            {
                 propElem = parent.getOwnerDocument().importNode(propElem, true);
-            }
             parent.appendChild(propElem);
         }
     }

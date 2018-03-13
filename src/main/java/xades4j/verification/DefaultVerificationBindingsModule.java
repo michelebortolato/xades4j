@@ -38,8 +38,10 @@ import xades4j.properties.data.IndividualDataObjsTimeStampData;
 import xades4j.properties.data.PropertyDataObject;
 import xades4j.properties.data.SignaturePolicyData;
 import xades4j.properties.data.SignatureProdPlaceData;
+import xades4j.properties.data.SignatureProdPlaceV2Data;
 import xades4j.properties.data.SignatureTimeStampData;
 import xades4j.properties.data.SignerRoleData;
+import xades4j.properties.data.SignerRoleV2Data;
 import xades4j.properties.data.SigningCertificateData;
 import xades4j.properties.data.SigningTimeData;
 import xades4j.providers.impl.DefaultMessageDigestProvider;
@@ -103,7 +105,9 @@ class DefaultVerificationBindingsModule extends AbstractModule
         // - SignedSignatureProperties
         bindBuiltInVerifier(SigningTimeData.class, SigningTimeVerifier.class);
         bindBuiltInVerifier(SignerRoleData.class, SignerRoleVerifier.class);
+        bindBuiltInVerifier(SignerRoleV2Data.class, SignerRoleV2Verifier.class);
         bindBuiltInVerifier(SignatureProdPlaceData.class, SigProdPlaceVerifier.class);
+        bindBuiltInVerifier(SignatureProdPlaceV2Data.class, SigProdPlaceV2Verifier.class);
         bindBuiltInVerifier(SigningCertificateData.class, SigningCertificateVerifier.class);
         bindBuiltInVerifier(SignaturePolicyData.class, SignaturePolicyVerifier.class);
         // - SignedDataObjectProperties

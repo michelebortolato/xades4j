@@ -18,11 +18,12 @@ package xades4j.providers;
 
 import xades4j.properties.SigningTimeProperty;
 import xades4j.properties.SignatureProductionPlaceProperty;
+import xades4j.properties.SignatureProductionPlaceV2Property;
 import xades4j.properties.CounterSignatureProperty;
 import xades4j.properties.OtherUnsignedSignatureProperty;
 import xades4j.properties.OtherSignedSignatureProperty;
-import xades4j.properties.PropertyTargetException;
 import xades4j.properties.SignerRoleProperty;
+import xades4j.properties.SignerRoleV2Property;
 
 /**
  * Interface for the collector of signature properties.
@@ -50,6 +51,9 @@ public interface SignaturePropertiesCollector
     public void setSignatureProductionPlace(
             SignatureProductionPlaceProperty sigProdPlace);
 
+    public void setSignatureProductionPlaceV2(
+            SignatureProductionPlaceV2Property sigProdPlace);
+
     /**
      * Sets the {@code SignerRole} signed property. This can be set only once.
      * @param signerRole the {@code SignerRole} property.
@@ -57,6 +61,14 @@ public interface SignaturePropertiesCollector
      * @throws PropertyTargetException if {@code SignerRole} is set more than once
      */
     public void setSignerRole(SignerRoleProperty signerRole);
+    
+    /**
+     * Sets the {@code SignerRoleV2} signed property. This can be set only once.
+     * @param signerRole the {@code SignerRoleV2} property.
+     * @throws NullPointerException if {@code signerRole} is {@code null}
+     * @throws PropertyTargetException if {@code SignerRole} is set more than once
+     */
+    public void setSignerRoleV2(SignerRoleV2Property signerRole);
 
     /**
      * Adds a {@code CounterSignature} unsigned property. Multiple counter signatures

@@ -29,14 +29,8 @@ class ExclusiveCanonicalXMLParamsMarshaller
 {
     protected List<Node> doMarshal(ExclusiveCanonicalXML alg, Document doc)
     {
-        if (alg.getInclusiveNamespacePrefixes() == null || alg.getInclusiveNamespacePrefixes().isEmpty())
-        {
-            return null;
-        }else
-        {
-            InclusiveNamespaces inclusive = new InclusiveNamespaces(doc, alg.getInclusiveNamespacePrefixes());
-            return Collections.singletonList((Node) inclusive.getElement());
-        }
+        InclusiveNamespaces inclusive = new InclusiveNamespaces(doc, alg.getInclusiveNamespacePrefixes());
+        return Collections.singletonList((Node) inclusive.getElement());
     }
 }
 

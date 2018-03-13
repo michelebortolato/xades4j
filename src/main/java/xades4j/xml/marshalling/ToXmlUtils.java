@@ -23,7 +23,9 @@ import xades4j.properties.ObjectIdentifier;
 import xades4j.properties.data.BaseCertRefsData;
 import xades4j.properties.data.CertRef;
 import xades4j.xml.bind.xades.XmlCertIDListType;
+import xades4j.xml.bind.xades.XmlCertIDListV2Type;
 import xades4j.xml.bind.xades.XmlCertIDType;
+import xades4j.xml.bind.xades.XmlCertIDTypeV2;
 import xades4j.xml.bind.xades.XmlDigestAlgAndValueType;
 import xades4j.xml.bind.xades.XmlIdentifierType;
 import xades4j.xml.bind.xades.XmlObjectIdentifierType;
@@ -59,9 +61,6 @@ class ToXmlUtils
         // same as not specifying a qualifier.
         xmlId.setQualifier(identifierTypeConv.get(objId.getIdentifierType()));
         xmlObjId.setIdentifier(xmlId);
-        
-        // Description
-        xmlObjId.setDescription(objId.getDescription());
 
         return xmlObjId;
     }
@@ -91,7 +90,41 @@ class ToXmlUtils
 
             certID = new XmlCertIDType();
             certID.setCertDigest(certDigest);
+            // seems ok
             certID.setIssuerSerial(issuerSerial);
+            xmlCertRefList.add(certID);
+        }
+
+        return xmlCertRefListProp;
+    }
+    
+    /**/
+    static XmlCertIDListV2Type getXmlCertRefListV2(BaseCertRefsData certRefsData)
+    {
+        XmlCertIDListV2Type xmlCertRefListProp = new XmlCertIDListV2Type();
+        List<XmlCertIDTypeV2> xmlCertRefList = xmlCertRefListProp.getCert();
+
+        XmlDigestAlgAndValueType certDigest;
+        XmlDigestMethodType certDigestMethod;
+        XmlX509IssuerSerialType issuerSerial;
+        XmlCertIDTypeV2 certID;
+
+        for (CertRef certRef : certRefsData.getCertRefs())
+        {
+            certDigestMethod = new XmlDigestMethodType();
+            certDigestMethod.setAlgorithm(certRef.digestAlgUri);
+            certDigest = new XmlDigestAlgAndValueType();
+            certDigest.setDigestMethod(certDigestMethod);
+            certDigest.setDigestValue(certRef.digestValue);
+
+            issuerSerial = new XmlX509IssuerSerialType();
+            issuerSerial.setX509IssuerName(certRef.issuerDN);
+            issuerSerial.setX509SerialNumber(certRef.serialNumber);
+
+            certID = new XmlCertIDTypeV2();
+            certID.setCertDigest(certDigest);
+            // TODO this could be null
+            certID.setIssuerSerialV2(null);
             xmlCertRefList.add(certID);
         }
 

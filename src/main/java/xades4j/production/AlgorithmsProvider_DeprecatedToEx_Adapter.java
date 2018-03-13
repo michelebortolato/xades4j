@@ -77,3 +77,7 @@ class AlgorithmsProvider_DeprecatedToEx_Adapter implements AlgorithmsProviderEx
         return this.algorithmsProvider.getDigestAlgorithmForTimeStampProperties();
     }
 }
+
+
+
+//class AlgorithmsProvider_DeprecatedToEx_ByType_Adapter implements AlgorithmsProviderEx{}

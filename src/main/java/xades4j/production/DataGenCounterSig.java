@@ -72,8 +72,7 @@ class DataGenCounterSig implements PropertyDataObjectGenerator<CounterSignatureP
                     ctx.getTargetXmlSignature().getElement(),
                     Constants.SignatureSpecNS, Constants._TAG_SIGNATUREVALUE);
             String sigValueId = sigValueElem.getAttribute(Constants._ATT_ID);
-            DataObjectReference sigValueRef = new DataObjectReference('#' + sigValueId)
-                    .withType(CounterSignatureProperty.COUNTER_SIGNATURE_TYPE_URI);
+            DataObjectReference sigValueRef = new DataObjectReference('#' + sigValueId);
 
             XadesSigner counterSigner = prop.getCounterSigSigner();
             if (null == counterSigner)
@@ -81,14 +80,10 @@ class DataGenCounterSig implements PropertyDataObjectGenerator<CounterSignatureP
 
             try
             {
-                SignedDataObjects objs = prop.getSignedDataObjectsForCounterSig();
-                if(null == objs)
-                    objs = new SignedDataObjects();
-
-                objs.withSignedDataObject(sigValueRef);
-                counterSigner.sign(objs, counterSigElem);
-            }
-            catch (XAdES4jException ex)
+                counterSigner.sign(
+                        new SignedDataObjects().withSignedDataObject(sigValueRef),
+                        counterSigElem);
+            } catch (XAdES4jException ex)
             {
                 throw new PropertyDataGenerationException(prop, "cannot apply counter signature", ex);
             }

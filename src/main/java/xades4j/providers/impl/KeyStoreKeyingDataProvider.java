@@ -106,12 +106,22 @@ public abstract class KeyStoreKeyingDataProvider implements KeyingDataProvider
     /**/
     
     private final KeyStoreBuilderCreator builderCreator;
-    private final SigningCertSelector certificateSelector;
+/*
+ * changed from private to protected so that the derived classes
+ * can use it in the override method getSgningCertificateChain  
+ * (m.caneve@alice.it)
+*/
+    protected final SigningCertSelector certificateSelector;
     private final KeyStorePasswordProvider storePasswordProvider;
     private final KeyEntryPasswordProvider entryPasswordProvider;
     private final boolean returnFullChain;
 
-    private KeyStore keyStore;
+/*
+ * changed from private to protected so that the derived classes
+ * can use it in the override method getSgningCertificateChain  
+ * (m.caneve@alice.it)
+*/
+    protected KeyStore keyStore;
     private final Object lockObj;
     private boolean initialized;
 
@@ -140,7 +150,12 @@ public abstract class KeyStoreKeyingDataProvider implements KeyingDataProvider
         this.initialized = false;
     }
 
-    private void ensureInitialized() throws UnexpectedJCAException
+/*
+ * changed from private to protected so that the derived classes
+ * can use it in the override method getSgningCertificateChain  
+ * (m.caneve@alice.it)
+*/
+    protected void ensureInitialized() throws UnexpectedJCAException
     {
         synchronized(this.lockObj)
         {

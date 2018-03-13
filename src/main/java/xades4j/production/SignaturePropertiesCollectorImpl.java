@@ -21,8 +21,10 @@ import xades4j.properties.CounterSignatureProperty;
 import xades4j.properties.OtherSignedSignatureProperty;
 import xades4j.properties.OtherUnsignedSignatureProperty;
 import xades4j.properties.SignatureProductionPlaceProperty;
+import xades4j.properties.SignatureProductionPlaceV2Property;
 import xades4j.properties.SignedSignatureProperty;
 import xades4j.properties.SignerRoleProperty;
+import xades4j.properties.SignerRoleV2Property;
 import xades4j.properties.SigningTimeProperty;
 import xades4j.properties.UnsignedSignatureProperty;
 import xades4j.providers.SignaturePropertiesCollector;
@@ -58,8 +60,20 @@ class SignaturePropertiesCollectorImpl implements SignaturePropertiesCollector
     }
 
     @Override
+    public void setSignatureProductionPlaceV2(
+            SignatureProductionPlaceV2Property sigProdPlace)
+    {
+        signedSigProps.put(sigProdPlace);
+    }
+
+    @Override
     public void setSignerRole(SignerRoleProperty signerRole)
     {
+        signedSigProps.put(signerRole);
+    }
+    
+    @Override
+    public void setSignerRoleV2(SignerRoleV2Property signerRole) {
         signedSigProps.put(signerRole);
     }
 

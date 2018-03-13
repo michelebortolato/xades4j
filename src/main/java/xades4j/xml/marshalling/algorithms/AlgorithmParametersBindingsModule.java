@@ -95,5 +95,27 @@ public final class AlgorithmParametersBindingsModule extends AbstractModule
                 return null;
             }
         });
+	
+	bind(new TypeLiteral<AlgorithmParametersMarshaller<CanonicalXMLWithComments11>>()
+	{
+	}).toInstance(new AlgorithmParametersMarshaller<CanonicalXMLWithComments11>(){
+
+	    @Override
+	    public List<Node> marshalParameters(CanonicalXMLWithComments11 alg, Document doc) {
+		return null;
+	    }
+	
+	});
+	
+	bind(new TypeLiteral<AlgorithmParametersMarshaller<CanonicalXMLWithoutComments11>>()
+	{
+	}).toInstance(new AlgorithmParametersMarshaller<CanonicalXMLWithoutComments11>(){
+
+	    @Override
+	    public List<Node> marshalParameters(CanonicalXMLWithoutComments11 alg, Document doc) {
+		return null;
+	    }
+	
+	});
     }
 }

@@ -25,6 +25,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -89,21 +93,17 @@ public class SignatureServicesTestBase
         return db.newDocument();
     }
 
+    @Rule
+    public static TemporaryFolder temporaryFolder = new TemporaryFolder();
+    
     protected static void outputDocument(Document doc, String fileName) throws Exception
     {
         TransformerFactory tf = TransformerFactory.newInstance();
-        File outDir = ensureOutputDir();
-        FileOutputStream out = new FileOutputStream(new File(outDir, fileName));
+        String path = temporaryFolder.newFile(fileName).getAbsolutePath();
+        FileOutputStream out = new FileOutputStream(path);
         tf.newTransformer().transform(
                 new DOMSource(doc),
                 new StreamResult(out));
         out.close();
-    }
-    
-    private static File ensureOutputDir()
-    {
-        File dir = new File(toPlatformSpecificFilePath("./target/out/"));
-        dir.mkdir();
-        return dir;
     }
 }

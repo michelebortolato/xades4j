@@ -56,8 +56,10 @@ public class PropertiesDataObjectsStructureVerifier
         structureVerifiers.put(AllDataObjsTimeStampData.class,
                 new BaseXAdESTimeStampDataStructureVerifier(AllDataObjsTimeStampProperty.PROP_NAME));
 
-        structureVerifiers.put(SignatureProdPlaceData.class,
-                new SignatureProdPlaceDataStructureVerifier());
+        structureVerifiers.put(SignatureProdPlaceData.class, new SignatureProdPlaceDataStructureVerifier());
+        
+        structureVerifiers.put(SignatureProdPlaceV2Data.class, new SignatureProdPlaceV2DataStructureVerifier());
+        
 
         structureVerifiers.put(SigningCertificateData.class,
                 new BaseCertRefsDataStructureVerifier(SigningCertificateProperty.PROP_NAME));
@@ -65,8 +67,8 @@ public class PropertiesDataObjectsStructureVerifier
         structureVerifiers.put(SigningTimeData.class,
                 new SigningTimeDataStructureVerifier());
 
-        structureVerifiers.put(SignerRoleData.class,
-                new SignerRoleDataStructureVerifier());
+        structureVerifiers.put(SignerRoleData.class, new SignerRoleDataStructureVerifier());
+        structureVerifiers.put(SignerRoleV2Data.class, new SignerRoleDataV2StructureVerifier());
 
         structureVerifiers.put(SignaturePolicyData.class,
                 new SignaturePolicyDataStructureVerifier());

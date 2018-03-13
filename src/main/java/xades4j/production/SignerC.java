@@ -49,7 +49,7 @@ class SignerC extends SignerT
             KeyingDataProvider keyingProvider,
             AlgorithmsProviderEx algorithmsProvider,
             BasicSignatureOptionsProvider basicSignatureOptionsProvider,
-            SignedDataObjectsProcessor dataObjectDescsProcessor,
+            DataObjectDescsProcessor dataObjectDescsProcessor,
             SignaturePropertiesProvider signaturePropsProvider,
             ValidationDataProvider validationDataProvider,
             DataObjectPropertiesProvider dataObjPropsProvider,

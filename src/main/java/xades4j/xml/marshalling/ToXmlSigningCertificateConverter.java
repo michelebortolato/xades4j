@@ -20,6 +20,7 @@ import org.w3c.dom.Document;
 import xades4j.properties.data.PropertyDataObject;
 import xades4j.properties.data.SigningCertificateData;
 import xades4j.xml.bind.xades.XmlCertIDListType;
+import xades4j.xml.bind.xades.XmlCertIDListV2Type;
 import xades4j.xml.bind.xades.XmlSignedPropertiesType;
 
 /**
@@ -35,7 +36,7 @@ class ToXmlSigningCertificateConverter implements SignedPropertyDataToXmlConvert
             Document doc)
     {
         SigningCertificateData signCertData = (SigningCertificateData)propData;
-        XmlCertIDListType xmlSigningCertificateProp = ToXmlUtils.getXmlCertRefList(signCertData);
-        xmlProps.getSignedSignatureProperties().setSigningCertificate(xmlSigningCertificateProp);
+        XmlCertIDListV2Type xmlSigningCertificateProp = ToXmlUtils.getXmlCertRefListV2(signCertData);
+        xmlProps.getSignedSignatureProperties().setSigningCertificateV2(xmlSigningCertificateProp);
     }
 }

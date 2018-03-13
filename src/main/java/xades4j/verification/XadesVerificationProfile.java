@@ -17,6 +17,7 @@
 package xades4j.verification;
 
 import com.google.inject.Module;
+import java.util.Map;
 import javax.xml.namespace.QName;
 import xades4j.utils.XadesProfileCore;
 import xades4j.utils.XadesProfileResolutionException;
@@ -26,6 +27,7 @@ import xades4j.providers.CertificateValidationProvider;
 import xades4j.providers.MessageDigestEngineProvider;
 import xades4j.providers.SignaturePolicyDocumentProvider;
 import xades4j.providers.TimeStampVerificationProvider;
+import xades4j.utils.CollectionUtils;
 import xades4j.utils.UtilsBindingsModule;
 import xades4j.xml.marshalling.algorithms.AlgorithmParametersBindingsModule;
 import xades4j.xml.unmarshalling.QualifyingPropertiesUnmarshaller;
@@ -39,7 +41,7 @@ import xades4j.xml.unmarshalling.UnmarshallingBindingsModule;
  * verify signatures using the configured components.
  * <p>
  * The minimum configuration is a {@link xades4j.providers.CertificateValidationProvider}
- * because the validation data (trust-anchors, CRLs, etc) has to be properly selected. All the other components
+ * because the validation data (trust-achors, CRLs, etc) has to be properly selected. All the other components
  * have default implementations that are used if no other actions are taken. However,
  * all of them can be replaced through the corresponding methods, either by an instance
  * or a class. When a class is used it may have dependencies on other components,
@@ -51,7 +53,7 @@ import xades4j.xml.unmarshalling.UnmarshallingBindingsModule;
  * Custom {@link QualifyingPropertyVerifier}s can also be configured. The principles
  * on their dependencies are the same. In addition, custom verifiers that apply 
  * over the whole on different stages of validation can be configured. Finally,
- * verifiers for specific XML elements may be added. This can be useful if one
+ * verifiers for specific XML elements may be added. This can be usefull if one
  * wants to handle an unsigned property that is not known by the library, as the
  * default unmarshaller will create {@code GenericDOMData} instances for those
  * properties if {@code acceptUnknownProperties} is set.
@@ -65,13 +67,11 @@ public final class XadesVerificationProfile
     private final XadesProfileCore profileCore;
     /**/
     private boolean acceptUnknownProperties;
-    private boolean secureValidation;
 
     private XadesVerificationProfile()
     {
         this.profileCore = new XadesProfileCore();
         this.acceptUnknownProperties = false;
-        this.secureValidation = false;
         withBinding(XadesVerifier.class, XadesVerifierImpl.class);
     }
 
@@ -89,8 +89,9 @@ public final class XadesVerificationProfile
         withBinding(CertificateValidationProvider.class, certificateValidationProviderClass);
     }
 
+    /***/
     /**
-     * Adds a type dependency mapping to the profile. This is typically done from an
+     * Adds a type dependency mapping to the profile. This is tipically done from an
      * interface to a type that implements that interface. When a dependency to
      * {@code from} is found, the {@code to} class is used. The {@code to} class
      * may in turn have its own dependencies.
@@ -139,7 +140,7 @@ public final class XadesVerificationProfile
     /**
      * Creates a new {@code XadesVerifier} based on the current state of the profile.
      * If any changes are made after this call, the previously returned verifier will
-     * not be affected. Other verifiers can be created, accumulating the profile changes.
+     * not be afected. Other verifiers can be created, accumulating the profile changes.
      * @return a {@code XadesVerifier} accordingly to this profile.
      * @throws XadesProfileResolutionException if the dependencies of the signer (direct and indirect) cannot be resolved
      */
@@ -147,7 +148,6 @@ public final class XadesVerificationProfile
     {
         XadesVerifierImpl v = profileCore.getInstance(XadesVerifierImpl.class, overridableModules, sealedModules);
         v.setAcceptUnknownProperties(acceptUnknownProperties);
-        v.setSecureValidation(secureValidation);
         return v;
     }
 
@@ -224,22 +224,6 @@ public final class XadesVerificationProfile
     public XadesVerificationProfile acceptUnknownProperties(boolean accept)
     {
         this.acceptUnknownProperties = accept;
-        return this;
-    }
-
-    /**
-     * If true, it will perform the digital enforcing the following restrictions:
-     *      1. Forbids use of the XSLT Transform
-     *      2. Restricts the number of SignedInfo or Manifest References to 30 or less
-     *      3. Restricts the number of Reference Transforms to 5 or less
-     *      4. Forbids the use of MD5 related signature or mac algorithms
-     *      5. Ensures that Reference Ids are unique to help prevent signature wrapping attacks
-     *      6. Forbids Reference URIs of type http or file
-     *      7. Does not allow a RetrievalMethod to reference another RetrievalMethod
-     */
-    public XadesVerificationProfile withSecureValidation(boolean secureValidation)
-    {
-        this.secureValidation = secureValidation;
         return this;
     }
 

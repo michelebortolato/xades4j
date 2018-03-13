@@ -54,7 +54,7 @@ public interface XadesVerifier
      * @return the verification result
      *
      * @see xades4j.verification.SignatureSpecificVerificationOptions
-     * @throws XAdES4jException if an error occurs, including if signature verification fails
+     * @throws XAdES4jException if an error eccurs, including if signature verification fails
      * @throws NullPointerException if {@code signatureElem} is {@code null}
      */
     public XAdESVerificationResult verify(
@@ -64,22 +64,22 @@ public interface XadesVerifier
     /**
      * Verifies a signature and extends its format if needed.
      * <p>
-     * Note that, due to the library's internal design, the properties being added
+     * Note that, due to the library's internal design, the properties being addedd
      * to a signature cannot have dependencies on each other because the XML for
      * a given set of properties is generated at the same time, after gathering
      * all the data needed to the properties. For instance, it's not possible to
-     * correctly add properties from XAdES-C and XAdES-X at the same time, as the
+     * correctly add properties from XAdES-C and XAdES-X t the same time, as the
      * last need the first's XML structure. This imposes some restrictions on the
-     * format extensions. Valid transitions are (actual signature form -&gt; form
+     * format extensions. Valid transitions are (actual signature form -> form
      * after extension):
      * <ul>
-     *  <li>BES/EPES -&gt; T</li>
-     *  <li>BES/EPES -&gt; C</li>
-     *  <li>T -&gt; C</li>
-     *  <li>C -&gt; X</li>
-     *  <li>C -&gt; X-L</li>
-     *  <li>X -&gt; X-L (not supported by default because X cannot be verified)</li>
-     *  <li>X-L -&gt; A (not supported by default because X-L cannot be verified)</li>
+     *  <li>BES/EPES -> T</li>
+     *  <li>BES/EPES -> C</li>
+     *  <li>T -> C</li>
+     *  <li>C -> X</li>
+     *  <li>C -> X-L</li>
+     *  <li>X -> X-L (not supported by default because X cannot be verified)</li>
+     *  <li>X-L -> A (not supported by default because X-L cannot be verified)</li>
      * </ul>
      * Note that the {@code XadesSignatureFormatExtender} can also be used separately,
      * but no checks are made to ensure that the signature has the appropriate
@@ -103,7 +103,7 @@ public interface XadesVerifier
      * @see xades4j.production.XadesFormatExtenderProfile
      * @see xades4j.production.XadesSignatureFormatExtender
      * @see xades4j.verification.SignatureSpecificVerificationOptions
-     * @throws XAdES4jException if an error occurs, including if signature verification fails
+     * @throws XAdES4jException if an error eccurs, including if signature verification fails
      * @throws NullPointerException if any parameter is {@code null}
      */
     public XAdESVerificationResult verify(

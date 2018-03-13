@@ -60,7 +60,6 @@ class FromXmlUtils
             certRefsData.addCertRef(ref);
         }
     }
-
     private static final Map<XmlQualifierType, IdentifierType> identifierTypeConv;
 
     static
@@ -78,7 +77,6 @@ class FromXmlUtils
         XmlIdentifierType xmlId = xmlObjId.getIdentifier();
         return new ObjectIdentifier(
                 xmlId.getValue(),
-                identifierTypeConv.get(xmlId.getQualifier()),
-                xmlObjId.getDescription());
+                identifierTypeConv.get(xmlId.getQualifier()));
     }
 }

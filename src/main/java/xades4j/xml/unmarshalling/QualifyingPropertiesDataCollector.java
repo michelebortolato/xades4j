@@ -20,6 +20,7 @@ import xades4j.properties.data.AllDataObjsTimeStampData;
 import xades4j.properties.data.SigningTimeData;
 import xades4j.properties.data.SigningCertificateData;
 import xades4j.properties.data.SignatureProdPlaceData;
+import xades4j.properties.data.SignatureProdPlaceV2Data;
 import xades4j.properties.data.DataObjectFormatData;
 import xades4j.properties.data.CommitmentTypeData;
 import xades4j.properties.data.CompleteCertificateRefsData;
@@ -30,6 +31,7 @@ import xades4j.properties.data.OtherPropertyData;
 import xades4j.properties.data.SignaturePolicyData;
 import xades4j.properties.data.SignatureTimeStampData;
 import xades4j.properties.data.SignerRoleData;
+import xades4j.properties.data.SignerRoleV2Data;
 
 /**
  * Passed to a {@link QualifyingPropertiesUnmarshaller} to collect the property
@@ -48,17 +50,18 @@ public interface QualifyingPropertiesDataCollector
 
     public void setSignatureProdPlace(SignatureProdPlaceData sigProdPlaceData);
 
+	public void setSignatureProdPlaceV2(SignatureProdPlaceV2Data sigProdPlaceData);
+
     public void setSignerRole(SignerRoleData signerRoleData);
+	public void setSignerRoleV2(SignerRoleV2Data signerRoleData);
 
     public void setSigningCertificate(SigningCertificateData signingCertData);
 
     public void setSignaturePolicy(SignaturePolicyData sigPolicyData);
 
-    public void setCompleteCertificateRefs(
-            CompleteCertificateRefsData completeCertRefsData);
+	public void setCompleteCertificateRefs(CompleteCertificateRefsData completeCertRefsData);
 
-    public void setCompleteRevocRefs(
-            CompleteRevocationRefsData completeRecovRefsData);
+	public void setCompleteRevocRefs(CompleteRevocationRefsData completeRecovRefsData);
 
     public void addSignatureTimeStamp(SignatureTimeStampData sigTSData);
 
@@ -68,8 +71,7 @@ public interface QualifyingPropertiesDataCollector
 
     public void addAllDataObjsTimeStamp(AllDataObjsTimeStampData objsTSData);
 
-    public void addIndividualDataObjsTimeStamp(
-            IndividualDataObjsTimeStampData objsTSData);
+	public void addIndividualDataObjsTimeStamp(IndividualDataObjsTimeStampData objsTSData);
 
     public void addGenericDOMData(GenericDOMData domData);
 

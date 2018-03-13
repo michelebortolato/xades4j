@@ -16,12 +16,11 @@
  */
 package xades4j.xml.unmarshalling;
 
-import java.util.Collection;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import xades4j.properties.CounterSignatureProperty;
 import xades4j.properties.QualifyingProperty;
 import xades4j.properties.data.GenericDOMData;
-import xades4j.utils.DOMHelper;
 
 /**
  *
@@ -34,14 +33,12 @@ class FromDOMCounterSignatureConverter implements QualifyingPropertyFromDOMConve
             Element props,
             QualifyingPropertiesDataCollector propertyDataCollector) throws PropertyUnmarshalException
     {
-        Collection<Element> counterSigs = DOMHelper.getChildElementsByTagNameNS(
-            props,
-            QualifyingProperty.XADES_XMLNS,
-            CounterSignatureProperty.PROP_NAME);
-        
-        for (Element counterSig : counterSigs)
+        NodeList counterSigs = props.getElementsByTagNameNS(
+                QualifyingProperty.XADES_XMLNS, CounterSignatureProperty.PROP_NAME);
+        for (int i = 0; i < counterSigs.getLength(); i++)
         {
-            propertyDataCollector.addGenericDOMData(new GenericDOMData(counterSig));
+            GenericDOMData counterSigData = new GenericDOMData((Element)counterSigs.item(i));
+            propertyDataCollector.addGenericDOMData(counterSigData);
         }
     }
 }

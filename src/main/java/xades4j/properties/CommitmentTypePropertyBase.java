@@ -16,11 +16,6 @@
  */
 package xades4j.properties;
 
-import java.util.Collection;
-import java.util.List;
-import org.w3c.dom.Element;
-import xades4j.utils.CollectionUtils;
-
 /**
  * Base class for the {@code CommitmentTypeIndication} property. This is a signed property
  * that qualifies signed data objects. In consequence, XAdES signatures may contain
@@ -50,7 +45,6 @@ public abstract class CommitmentTypePropertyBase extends SignedDataObjectPropert
     public static final String PROP_NAME = "CommitmentTypeIndication";
     /**/
     private final String uri, description;
-    private Collection qualifiers;
 
     protected CommitmentTypePropertyBase(String uri, String description,
             TargetMultiplicity targetMult)
@@ -66,7 +60,7 @@ public abstract class CommitmentTypePropertyBase extends SignedDataObjectPropert
      */
     public String getDescription()
     {
-        return this.description;
+        return description;
     }
     /**
      * Gets the URI of this commitment type.
@@ -74,30 +68,12 @@ public abstract class CommitmentTypePropertyBase extends SignedDataObjectPropert
      */
     public String getUri()
     {
-        return this.uri;
+        return uri;
     }
 
     @Override
     public String getName()
     {
         return PROP_NAME;
-    }
-    
-    public CommitmentTypePropertyBase withQualifier(String qualifier){
-        return this.addQualifier(qualifier);
-    }
-    
-    public CommitmentTypePropertyBase withQualifier(Element qualifier){
-        return this.addQualifier(qualifier);
-    }
-    
-    private CommitmentTypePropertyBase addQualifier(Object qualifier){
-        this.qualifiers = CollectionUtils.newIfNull(this.qualifiers, 2);
-        this.qualifiers.add(qualifier);
-        return this;
-    }
-    
-    public Collection getQualifiers(){
-        return CollectionUtils.emptyIfNull(this.qualifiers);
     }
 }

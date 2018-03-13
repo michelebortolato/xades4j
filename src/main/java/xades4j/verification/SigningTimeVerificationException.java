@@ -17,7 +17,6 @@
 package xades4j.verification;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import xades4j.properties.SigningTimeProperty;
 
@@ -51,7 +50,7 @@ public class SigningTimeVerificationException extends InvalidPropertyException
     @Override
     protected String getVerificationMessage()
     {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        DateFormat df = DateFormat.getDateTimeInstance();
         return String.format("Expected a signature time before %s but actual signature time is %s",
                 df.format(maximumExpectedTime), df.format(sigTime));
     }

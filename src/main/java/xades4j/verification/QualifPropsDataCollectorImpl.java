@@ -26,12 +26,14 @@ import xades4j.properties.data.OtherPropertyData;
 import xades4j.properties.data.SignaturePolicyData;
 import xades4j.properties.data.SignatureTimeStampData;
 import xades4j.properties.data.SignerRoleData;
+import xades4j.properties.data.SignerRoleV2Data;
 import xades4j.utils.PropertiesSet;
 import xades4j.properties.data.CommitmentTypeData;
 import xades4j.properties.data.DataObjectFormatData;
 import xades4j.properties.data.PropertyDataObject;
 import xades4j.xml.unmarshalling.QualifyingPropertiesDataCollector;
 import xades4j.properties.data.SignatureProdPlaceData;
+import xades4j.properties.data.SignatureProdPlaceV2Data;
 import xades4j.properties.data.SigningCertificateData;
 import xades4j.properties.data.SigningTimeData;
 
@@ -61,8 +63,19 @@ class QualifPropsDataCollectorImpl implements QualifyingPropertiesDataCollector
     }
 
     @Override
+    public void setSignerRoleV2(SignerRoleV2Data signerRoleData)
+    {
+        propsData.put(signerRoleData);
+    }
+
+    @Override
     public void setSignatureProdPlace(SignatureProdPlaceData sigProdPlaceData)
     {
+        propsData.put(sigProdPlaceData);
+    }
+    
+    @Override
+	public void setSignatureProdPlaceV2(SignatureProdPlaceV2Data sigProdPlaceData) {
         propsData.put(sigProdPlaceData);
     }
 

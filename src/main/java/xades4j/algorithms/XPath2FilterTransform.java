@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPath2FilterContainer;
+import xades4j.algorithms.XPath2FilterTransform.XPath2Filter;
 
 /**
  * The XPath 2.0 transform. Instances of the transform can be initially created
@@ -33,10 +34,11 @@ import org.apache.xml.security.transforms.params.XPath2FilterContainer;
  * XPath2FilterTransform t = XPath2Filter.subtract("xpath1").intersect("xpath2");
  * </code>
  * <p>
+ * Instances of this class are immutable.
  *
  * @author Luís
  */
-public final class XPath2FilterTransform extends XPathTransformBase
+public final class XPath2FilterTransform extends Algorithm
 {
     /**
      * A filter for the XPath 2.0 transform. The static methods on this class can
@@ -78,6 +80,13 @@ public final class XPath2FilterTransform extends XPathTransformBase
         /**/
         /**********************************************************************/
         /**/
+        private static final XPath2FilterTransform emptyTransform;
+
+        static
+        {
+            List<XPath2Filter> emptyFilters = Collections.emptyList();
+            emptyTransform = new XPath2FilterTransform(emptyFilters);
+        }
 
         /**
          * Creates a new {@code XPath2FilterTransform} with a single intersect
@@ -87,7 +96,7 @@ public final class XPath2FilterTransform extends XPathTransformBase
          */
         public static XPath2FilterTransform intersect(String xpath)
         {
-            return new XPath2FilterTransform().intersect(xpath);
+            return emptyTransform.intersect(xpath);
         }
 
         /**
@@ -98,7 +107,7 @@ public final class XPath2FilterTransform extends XPathTransformBase
          */
         public static XPath2FilterTransform subtract(String xpath)
         {
-            return new XPath2FilterTransform().subtract(xpath);
+            return emptyTransform.subtract(xpath);
         }
 
         /**
@@ -109,73 +118,63 @@ public final class XPath2FilterTransform extends XPathTransformBase
          */
         public static XPath2FilterTransform union(String xpath)
         {
-            return new XPath2FilterTransform().union(xpath);
+            return emptyTransform.union(xpath);
         }
     }
     private final List<XPath2Filter> filters;
 
-    private XPath2FilterTransform()
+    private XPath2FilterTransform(List<XPath2Filter> filters)
     {
         super(Transforms.TRANSFORM_XPATH2FILTER);
-        this.filters = new ArrayList<XPath2Filter>(2);
+        this.filters = Collections.unmodifiableList(filters);
     }
 
     /**
-     * Adds a new intersect filter to the current transform.
+     * Creates a new {@code XPath2FilterTransform} that contains the filters on
+     * the current instance plus a new intersect filter.
      * @param xpath the filter expression
-     * @return the current transform
+     * @return the new transform
      */
     public XPath2FilterTransform intersect(String xpath)
     {
-        this.filters.add(new XPath2Filter(XPath2FilterContainer.INTERSECT, xpath));
-        return this;
+        return cloneAndAddNewFilter(XPath2FilterContainer.INTERSECT, xpath);
     }
 
     /**
-     * Adds a new subtract filter to the current transform.
+     * Creates a new {@code XPath2FilterTransform} that contains the filters on
+     * the current instance plus a new subtract filter.
      * @param xpath the filter expression
-     * @return the current transform
+     * @return the new transform
      */
     public XPath2FilterTransform subtract(String xpath)
     {
-        this.filters.add(new XPath2Filter(XPath2FilterContainer.SUBTRACT, xpath));
-        return this;
+        return cloneAndAddNewFilter(XPath2FilterContainer.SUBTRACT, xpath);
     }
 
     /**
-     * Adds a new union filter to the current transform.
+     * Creates a new {@code XPath2FilterTransform} that contains the filters on
+     * the current instance plus a new union filter.
      * @param xpath the filter expression
-     * @return the current transform
+     * @return the new transform
      */
     public XPath2FilterTransform union(String xpath)
     {
-        this.filters.add(new XPath2Filter(XPath2FilterContainer.UNION, xpath));
-        return this;
+        return cloneAndAddNewFilter(XPath2FilterContainer.UNION, xpath);
+    }
+
+    private XPath2FilterTransform cloneAndAddNewFilter(String filterType, String xpath)
+    {
+        List<XPath2Filter> newFilters = new ArrayList<XPath2Filter>(this.filters);
+        newFilters.add(new XPath2Filter(filterType, xpath));
+        return new XPath2FilterTransform(newFilters);
     }
 
     /**
      * Gets the filters of the current transform.
-     * @return an immutable list of filters
+     * @return the immutable list of filters
      */
     public List<XPath2Filter> getFilters()
     {
-        return Collections.unmodifiableList(this.filters);
-    }
-    
-    /**
-     * Registers a namespace and the corresponding prefix to be used when resolving
-     * the XPath filter expressions of the current transform.
-     * For simplicity, the namespace declaration will be added to <b>all</b> the
-     * resulting {@code XPath} parameter elements.
-     * 
-     * @param prefix the namespace prefix
-     * @param namespace the namespace URI
-     * 
-     * @return the current instance
-     */
-    public XPath2FilterTransform withNamespace(String prefix, String namespace)
-    {
-        addNamespace(prefix, namespace);
-        return this;
+        return this.filters;
     }
 }

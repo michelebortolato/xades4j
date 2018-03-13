@@ -35,8 +35,10 @@ import xades4j.properties.SigAndRefsTimeStampProperty;
 import xades4j.properties.SignaturePolicyIdentifierProperty;
 import xades4j.properties.SignaturePolicyImpliedProperty;
 import xades4j.properties.SignatureProductionPlaceProperty;
+import xades4j.properties.SignatureProductionPlaceV2Property;
 import xades4j.properties.SignatureTimeStampProperty;
 import xades4j.properties.SignerRoleProperty;
+import xades4j.properties.SignerRoleV2Property;
 import xades4j.properties.SigningCertificateProperty;
 import xades4j.properties.SigningTimeProperty;
 import xades4j.properties.data.CustomPropertiesDataObjsStructureVerifier;
@@ -50,9 +52,8 @@ import xades4j.providers.TimeStampTokenProvider;
 import xades4j.providers.impl.DefaultAlgorithmsProviderEx;
 import xades4j.providers.impl.DefaultMessageDigestProvider;
 import xades4j.providers.impl.DefaultSignaturePropertiesProvider;
+import xades4j.providers.impl.DefaultTimeStampTokenProvider;
 import xades4j.providers.impl.DefaultBasicSignatureOptionsProvider;
-import xades4j.providers.impl.HttpTimeStampTokenProvider;
-import xades4j.providers.impl.TSAHttpData;
 
 /**
  * Contains the Guice bindings for the default components and the bindings for the
@@ -80,8 +81,7 @@ class DefaultProductionBindingsModule extends AbstractModule
         bind(AlgorithmsProvider.class).to(AlgorithmsProvider_ExToDeprecated_Adapter.class);
         bind(BasicSignatureOptionsProvider.class).to(DefaultBasicSignatureOptionsProvider.class);
         bind(MessageDigestEngineProvider.class).to(DefaultMessageDigestProvider.class);
-        bind(TimeStampTokenProvider.class).to(HttpTimeStampTokenProvider.class);
-        bind(TSAHttpData.class).toInstance(new TSAHttpData("http://tss.accv.es:8318/tsa")); // Backwards compatibility
+        bind(TimeStampTokenProvider.class).to(DefaultTimeStampTokenProvider.class);
 
         // PropertiesDataObjectsGenerator is not configurable but the individual
         // generators may have dependencies.
@@ -101,6 +101,10 @@ class DefaultProductionBindingsModule extends AbstractModule
         {
         }).to(DataGenSignerRole.class);
 
+        bind(new TypeLiteral<PropertyDataObjectGenerator<SignerRoleV2Property>>()
+        {
+        }).to(DataGenSignerRoleV2.class);
+
         bind(new TypeLiteral<PropertyDataObjectGenerator<SigningCertificateProperty>>()
         {
         }).to(DataGenSigningCertificate.class);
@@ -108,6 +112,10 @@ class DefaultProductionBindingsModule extends AbstractModule
         bind(new TypeLiteral<PropertyDataObjectGenerator<SignatureProductionPlaceProperty>>()
         {
         }).to(DataGenSigProdPlace.class);
+        
+        bind(new TypeLiteral<PropertyDataObjectGenerator<SignatureProductionPlaceV2Property>>()
+        {
+        }).to(DataGenSigProdV2Place.class);
 
         bind(new TypeLiteral<PropertyDataObjectGenerator<SignaturePolicyIdentifierProperty>>()
         {

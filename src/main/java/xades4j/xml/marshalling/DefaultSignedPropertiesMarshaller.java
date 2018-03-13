@@ -26,7 +26,9 @@ import xades4j.properties.data.DataObjectFormatData;
 import xades4j.properties.data.IndividualDataObjsTimeStampData;
 import xades4j.properties.data.SignaturePolicyData;
 import xades4j.properties.data.SignatureProdPlaceData;
+import xades4j.properties.data.SignatureProdPlaceV2Data;
 import xades4j.properties.data.SignerRoleData;
+import xades4j.properties.data.SignerRoleV2Data;
 import xades4j.properties.data.SigningCertificateData;
 import xades4j.properties.data.SigningTimeData;
 import xades4j.xml.bind.xades.ObjectFactory;
@@ -52,34 +54,21 @@ final class DefaultSignedPropertiesMarshaller
         super(9, QualifyingProperty.SIGNED_PROPS_TAG);
         
         // Signed signature properties
-        super.putConverter(
-                SigningCertificateData.class,
-                new ToXmlSigningCertificateConverter());
-        super.putConverter(
-                SigningTimeData.class,
-                new ToXmlSigningTimeConverter());
-        super.putConverter(SignerRoleData.class,
-                new ToXmlSignerRoleConverter());
-        super.putConverter(
-                SignatureProdPlaceData.class,
-                new ToXmlSignatureProductionPlaceConverter());
-        super.putConverter(
-                SignaturePolicyData.class,
-                new ToXmlSignaturePolicyConverter());
+		super.putConverter(SigningCertificateData.class, new ToXmlSigningCertificateConverter());
+		super.putConverter(SigningTimeData.class, new ToXmlSigningTimeConverter());
+		super.putConverter(SignerRoleData.class, new ToXmlSignerRoleConverter());
+		super.putConverter(SignerRoleV2Data.class, new ToXmlSignerRoleV2Converter());
 
+		super.putConverter(SignatureProdPlaceData.class, new ToXmlSignatureProductionPlaceConverter());
+		super.putConverter(SignatureProdPlaceV2Data.class, new ToXmlSignatureProductionPlaceV2Converter());
         // Signed data objects properties
-        super.putConverter(
-                DataObjectFormatData.class,
-                new ToXmlDataObjectFormatConverter());
-        super.putConverter(
-                CommitmentTypeData.class,
-                new ToXmlCommitmentTypeConverter());
-        super.putConverter(
-                IndividualDataObjsTimeStampData.class,
-                new ToXmlIndivDataObjsTimeStampConverter(algorithmsParametersMarshallingProvider));
-        super.putConverter(
-                AllDataObjsTimeStampData.class,
-                new ToXmlAllDataObjsTimeStampConverter(algorithmsParametersMarshallingProvider));
+		super.putConverter(SignaturePolicyData.class, new ToXmlSignaturePolicyConverter());
+
+		// Signed data objects properties
+		super.putConverter(DataObjectFormatData.class, new ToXmlDataObjectFormatConverter());
+		super.putConverter(CommitmentTypeData.class, new ToXmlCommitmentTypeConverter());
+		super.putConverter(IndividualDataObjsTimeStampData.class, new ToXmlIndivDataObjsTimeStampConverter(algorithmsParametersMarshallingProvider));
+		super.putConverter(AllDataObjsTimeStampData.class, new ToXmlAllDataObjsTimeStampConverter(algorithmsParametersMarshallingProvider));
     }
 
     /* Methods from SignedPropertiesMarshaller */
@@ -110,9 +99,7 @@ final class DefaultSignedPropertiesMarshaller
     }
 
     @Override
-    protected Object createPropsXmlElem(
-            ObjectFactory objFact,
-            XmlSignedPropertiesType xmlProps)
+	protected Object createPropsXmlElem(ObjectFactory objFact, XmlSignedPropertiesType xmlProps)
     {
         return objFact.createSignedProperties(xmlProps);
     }

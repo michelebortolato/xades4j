@@ -17,24 +17,37 @@
 package xades4j.providers.impl;
 
 import com.google.inject.Inject;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import xades4j.providers.MessageDigestEngineProvider;
+import xades4j.utils.Base64;
 
 /**
- * This class is deprecated. See {@link HttpTimeStampTokenProvider} and
- * {@link TSAHttpData}.
+ * A {@link xades4j.providers.TimeStampTokenProvider} that issues time-stamp requests
+ * over HTTP using basic authentication. When configuring a profile to use this type,
+ * the authentication data should also be configured on the profile.
+ * @see TSAHttpAuthenticationData
+ * @author Luís
  */
-@Deprecated
-public final class AuthenticatedTimeStampTokenProvider extends HttpTimeStampTokenProvider
+public final class AuthenticatedTimeStampTokenProvider extends DefaultTimeStampTokenProvider
 {
+    private final String base64tsaUsrAndPwd;
+
     @Inject
     public AuthenticatedTimeStampTokenProvider(
             MessageDigestEngineProvider messageDigestProvider,
             TSAHttpAuthenticationData httpAuthenticationData)
     {
-        super(messageDigestProvider, new TSAHttpData(
-                httpAuthenticationData.getTsaUrl(),
-                httpAuthenticationData.getTsaUser(),
-                httpAuthenticationData.getTsaPassword()
-        ));
+        super(messageDigestProvider, httpAuthenticationData.getTsaUrl());
+        String usrAndPwd = httpAuthenticationData.getTsaUser() + ":" + httpAuthenticationData.getTsaPassword();
+        this.base64tsaUsrAndPwd = Base64.encodeBytes(usrAndPwd.getBytes());
+    }
+
+    @Override
+    HttpURLConnection getHttpConnection() throws IOException
+    {
+        HttpURLConnection connection = super.getHttpConnection();
+        connection.setRequestProperty("Authorization", "Basic " + this.base64tsaUsrAndPwd);
+        return connection;
     }
 }

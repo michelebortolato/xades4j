@@ -44,7 +44,16 @@ class TimeStampDigestInputFactoryImpl implements TimeStampDigestInputFactory
             throw new NullPointerException("Canonicalization algorithm cannot be null");
         }
 
-        CanonicalizerUtils.checkC14NAlgorithm(c14n);
+        // HACK: since we're not using Canonicalizer, do a quick check to ensure
+        // that 'c14n' refers to a configured C14N algorithm.
+        try
+        {
+            Canonicalizer.getInstance(c14n.getUri());
+        }
+        catch (InvalidCanonicalizerException ex)
+        {
+            throw new UnsupportedAlgorithmException("Unsupported canonicalization method", c14n.getUri(), ex);
+        }
 
         return new TimeStampDigestInputImpl(c14n, this.parametersMarshallingProvider);
     }

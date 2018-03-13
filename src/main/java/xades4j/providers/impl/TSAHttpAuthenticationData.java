@@ -18,8 +18,10 @@
 package xades4j.providers.impl;
 
 /**
- * This class is deprecated. See {@link HttpTimeStampTokenProvider} and
- * {@link TSAHttpData}.
+ * Configuration to access a TSA using HTTP authentication. This class is tipically
+ * used with {@link AuthenticatedTimeStampTokenProvider} by regestering an instance
+ * with the appropriate URL, username and password on the signing/verification profile.
+ * @author Luís
  */
 public final class TSAHttpAuthenticationData
 {
@@ -27,7 +29,6 @@ public final class TSAHttpAuthenticationData
     private final String tsaUser;
     private final String tsaPassword;
 
-    @Deprecated
     public TSAHttpAuthenticationData(String tsaUrl, String tsaUser, String tsaPassword)
     {
         this.tsaUrl = tsaUrl;
